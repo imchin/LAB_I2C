@@ -47,13 +47,7 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint8_t eepromExampleWriteFlag = 0;
-uint8_t eepromExampleReadFlag = 0;
-uint8_t IOExpdrExampleWriteFlag = 0;
-uint8_t IOExpdrExampleReadFlag = 0;
-uint8_t eepromDataReadBack[4];
-uint8_t IOExpdrDataReadBack;
-uint8_t IOExpdrDataWrite = 0b01010101;
+
 void IOExpenderInit();
 uint8_t Wdata=0b11111111;
 void writerom();
@@ -333,24 +327,7 @@ void ReadioEx(){
 
 
 
-void EEPROMWriteExample() {
-	if (eepromExampleWriteFlag && hi2c1.State == HAL_I2C_STATE_READY) {
 
-		static uint8_t data[4] = { 0xff, 0x00, 0x55, 0xaa };
-		HAL_I2C_Mem_Write_IT(&hi2c1, EEPROM_ADDR, 0x2C, I2C_MEMADD_SIZE_16BIT,data, 4);
-
-
-
-		eepromExampleWriteFlag = 0;
-	}
-}
-void EEPROMReadExample(uint8_t *Rdata, uint16_t len) {
-	if (eepromExampleReadFlag && hi2c1.State == HAL_I2C_STATE_READY) {
-
-		HAL_I2C_Mem_Read_IT(&hi2c1, EEPROM_ADDR, 0x2c, I2C_MEMADD_SIZE_16BIT,Rdata, len);
-		eepromExampleReadFlag = 0;
-	}
-}
 void IOExpenderInit() {
 	//Init All
 	static uint8_t Setting[0x16] = { 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -358,20 +335,7 @@ void IOExpenderInit() {
 			0x00, 0x00, 0x00, 0x00 };
 	HAL_I2C_Mem_Write(&hi2c1, IOEXPD_ADDR, 0x00, I2C_MEMADD_SIZE_8BIT, Setting,0x16, 2000);
 }
-void IOExpenderReadPinA(uint8_t *Rdata) {
-	if (IOExpdrExampleReadFlag && hi2c1.State == HAL_I2C_STATE_READY) {
-		HAL_I2C_Mem_Read_IT(&hi2c1, IOEXPD_ADDR, 0x12, I2C_MEMADD_SIZE_8BIT,Rdata, 1);
-		IOExpdrExampleReadFlag =0;
-	}
-}
-void IOExpenderWritePinB(uint8_t Wdata) {
-	if (IOExpdrExampleWriteFlag && hi2c1.State == HAL_I2C_STATE_READY) {
-		static uint8_t data;
-		data = Wdata;
-		HAL_I2C_Mem_Write_IT(&hi2c1, IOEXPD_ADDR, 0x15, I2C_MEMADD_SIZE_8BIT,&data, 1);
-		IOExpdrExampleWriteFlag=0;
-	}
-}
+
 /* USER CODE END 4 */
 
 /**
